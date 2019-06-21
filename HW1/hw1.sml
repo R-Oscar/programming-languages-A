@@ -64,8 +64,42 @@ fun what_month (day : int) =
     in
 	1 + number_before_reaching_sum(day, daysInMonths)
     end
-	
-		 
-		 
-	
-    
+
+fun month_range (day1 : int, day2 : int) =
+    if day1 > day2 then []
+    else
+	what_month(day1)::month_range(day1 + 1, day2)
+
+fun oldest (dates: (int * int * int) list) =
+    if null dates then
+	NONE
+    else
+	if null (tl dates) then
+	    SOME (hd dates)
+	else
+	    let
+		val oldest_tails = oldest(tl dates)
+	    in
+		if is_older(hd dates, valOf oldest_tails) then
+		    SOME (hd dates)
+		else
+		    oldest_tails
+	    end
+	    
+fun is_num_in_list (num : int, xs : int list) =
+    if null xs then false
+    else
+	if (num = hd xs) then true
+	else is_num_in_list(num, tl xs)
+	    
+	    
+fun remove_duplicates(xs : int list) =
+    if null xs then
+	[]
+    else
+	if is_num_in_list(hd xs, tl xs) then
+	    remove_duplicates(tl xs)
+	else
+	    hd xs :: remove_duplicates(tl xs)
+
+				      
