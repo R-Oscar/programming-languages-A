@@ -1,9 +1,17 @@
 fun is_older(date1 : int * int * int, date2 : int * int * int) =
-    if (#1 date2) > (#1 date1) then true
+    if (#1 date2) > (#1 date1) then
+	true
     else
-	if (#2 date2) > (#1 date1) then true
+	if (#1 date2) = (#1 date1) then 
+	    if (#2 date2) > (#2 date1) then
+		true
+	    else
+		if (#2 date2 = #2 date1) then
+		    #3 date2 > #3 date1
+		else
+		    false
 	else
-	    #3 date2 > #3 date1
+	    false
 
 fun number_in_month(dates : (int * int * int) list, month : int) =
     if null dates then 0
@@ -80,10 +88,10 @@ fun oldest (dates: (int * int * int) list) =
 	    let
 		val oldest_tails = oldest(tl dates)
 	    in
-		if is_older(hd dates, valOf oldest_tails) then
-		    SOME (hd dates)
-		else
+		if is_older(valOf oldest_tails, hd dates) then
 		    oldest_tails
+		else
+		    SOME (hd dates)
 	    end
 	    
 fun is_num_in_list (num : int, xs : int list) =
@@ -92,14 +100,29 @@ fun is_num_in_list (num : int, xs : int list) =
 	if (num = hd xs) then true
 	else is_num_in_list(num, tl xs)
 	    
+fun number_in_months_challenge(dates : (int * int * int) list, months : int list) =
+    let
+	fun remove_duplicates(xs : int list) =
+	    if null xs then
+		[]
+	    else
+		let
+		    fun is_num_in_list (num : int, xs : int list) =
+			if null xs then false
+			else
+			    if (num = hd xs) then true
+			    else
+				is_num_in_list(num, tl xs)
+		in
+		    if is_num_in_list(hd xs, tl xs) then
+			remove_duplicates(tl xs)
+		    else
+			hd xs :: remove_duplicates(tl xs)
+		end
+    in
+	number_in_months(dates, remove_duplicates(months))
+    end
+	
+					    
 	    
-fun remove_duplicates(xs : int list) =
-    if null xs then
-	[]
-    else
-	if is_num_in_list(hd xs, tl xs) then
-	    remove_duplicates(tl xs)
-	else
-	    hd xs :: remove_duplicates(tl xs)
-
 				      
